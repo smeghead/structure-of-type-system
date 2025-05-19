@@ -1,4 +1,4 @@
-import { parseArith } from 'npm:tiny-ts-parser';
+import { parseArith } from 'npm:tiny-ts-parser'
 
 type Term =
   | { tag: 'true' }
@@ -9,14 +9,15 @@ type Term =
 
 type Type = 
   | { tag: 'Boolean' }
-  | { tag: 'Number' };
+  | { tag: 'Number' }
 
 function typecheck(t: Term): Type {
   switch (t.tag) {
     case 'true':
-      return { tag: 'Boolean' };
+      return { tag: 'Boolean' }
     case 'true':
-      return { tag: 'Boolean' };
-  return { tag
+      return { tag: 'Boolean' }
+  }
 }
-console.log(parseArith('100'));
+
+console.log(parseArith('100'))

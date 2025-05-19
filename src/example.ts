@@ -1,4 +1,4 @@
-import { parseArith } from 'npm:tiny-ts-parser';
+import { parseArith } from 'npm:tiny-ts-parser'
 
-console.log(parseArith('1 + 2'));
+console.log(parseArith('1 + 2'))
 
