@@ -15,9 +15,10 @@ function typecheck(t: Term): Type {
   switch (t.tag) {
     case 'true':
       return { tag: 'Boolean' }
-    case 'true':
+    case 'false':
       return { tag: 'Boolean' }
   }
+  throw 'unknown';
 }
 
 console.log(parseArith('100'))
