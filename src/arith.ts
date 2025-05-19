@@ -38,4 +38,4 @@ function typecheck(t: Term): Type {
   throw 'unknown';
 }
 
-console.log(parseArith('100'))
+console.log(typecheck(parseArith('1 + 2')))
