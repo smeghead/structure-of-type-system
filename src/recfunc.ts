@@ -1,4 +1,4 @@
-import { parseBasic } from 'npm:tiny-ts-parser'
+import { error, parseRecFunc } from 'npm:tiny-ts-parser'
 
 type Term =
   | { tag: 'true' }
@@ -11,6 +11,14 @@ type Term =
   | { tag: 'call'; func: Term; args: Term[] }
   | { tag: 'seq'; body: Term; rest: Term }
   | { tag: 'const'; name: string; init: Term; rest: Term }
+  | {
+    tag: 'recFunc';
+    funcName: string;
+    params: Param[];
+    retType: Type;
+    body: Term;
+    rest: Term;
+  }
 
 type Param = { name: string; type: Type }
 
@@ -96,29 +104,26 @@ function typecheck(t: Term, tyEnv: TypeEnv): Type {
         const newTyEnv = { ...tyEnv, [t.name]: ty }
         return typecheck(t.rest, newTyEnv)
     }
+    case 'recFunc': {
+        const funcTy: Type = { tag: 'Func', params: t.params, retType: t.retType }
+        const newTyEnv = { ...tyEnv }
+        for (const { name, type } of t.params) {
+            newTyEnv[name] = type;
+        }
+        newTyEnv[t.funcName] = funcTy
+        const retType = typecheck(t.body, newTyEnv)
+        if (!typeEq(t.retType, retType)) error('wrong return type', t)
+        const newTyEnv2 = { ...tyEnv, [t.funcName]: funcTy }
+        return typecheck(t.rest, newTyEnv2)
+    }
     default:
         throw new Error('not implemented yet')
   }
 }
 
-console.log(typecheck(parseBasic('(x: boolean) => x'), {}))
-console.log(typecheck(parseBasic('( (x: number) => x )(42)'), {}))
-
-// エラーになる例
-try {
-    console.log(typecheck(parseBasic('( (x: number) => x )(true)'), {}))
-} catch (e) {
-    console.error(e)
-}
-
-console.log(typecheck(parseBasic(`
-    const add = (x: number, y: number) => x + y
-    const select = (b: boolean, x: number, y: number) => b ? x : y
-    
-    const x = add(1, add(2, 3))
-    const y = select(true, x, x)
-    
-    y
+console.log(typecheck(parseRecFunc(`
+    function f(x: number): number { return f(x) }
+    f(0)
 `), {}))
 
 console.log('complete')

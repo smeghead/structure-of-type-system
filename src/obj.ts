@@ -82,7 +82,7 @@ function typecheck(t: Term, tyEnv: TypeEnv): Type {
     }
     case 'var': {
         if (tyEnv[t.name] === undefined)
-            throw new Error(`unknown vsriable: ${t.name}`)
+            throw new Error(`unknown variable: ${t.name}`)
         return tyEnv[t.name]
     }
     case 'func': {
